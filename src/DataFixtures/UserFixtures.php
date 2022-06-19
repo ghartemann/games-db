@@ -3,41 +3,51 @@
 namespace App\DataFixtures;
 
 use App\Entity\Game;
+use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class UserFixtures extends Fixture
 {
     const USERS = [
         [
             'email' => 'vin.diesel@wanadoo.fr',
-            'roles' => '',
+            'roles' => ['ROLE_ADMIN'],
             'password' => 'family',
         ], [
-            'title' => 'RollerCoaster Tycoon',
-            'category' => 'Builder',
-            'description' => "Construisez un parc d'attractions",
+            'email' => 'test@test.com',
+            'roles' => ['ROLE_USER'],
+            'password' => "test",
         ],
     ];
+
+    private UserPasswordHasherInterface $passwordHasher;
+
+    public function __construct(UserPasswordHasherInterface $passwordHasher)
+    {
+        $this->passwordHasher = $passwordHasher;
+    }
 
     public function load(ObjectManager $manager): void
     {
         foreach (self::USERS as $userName) {
-            $game = new Game();
-            $game
-                ->setTitle($gameName['title'])
-                ->setCategory($this->getReference('category_' . $gameName['category']))
-                ->setDescription($gameName['description']);
-            $manager->persist($game);
+            $user = new User();
+
+            $hashedPassword = $this
+                ->passwordHasher
+                ->hashPassword(
+                    $user,
+                    $userName['password']
+                );
+
+            $user
+                ->setEmail($userName['email'])
+                ->setPassword($hashedPassword)
+                ->setRoles($userName['roles']);
+            $manager->persist($user);
         }
         $manager->flush();
-    }
-
-    public function getDependencies(): array
-    {
-        return [
-            CategoryFixtures::class,
-        ];
     }
 }
