@@ -1,0 +1,9 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello CategoryController!{% endblock %}
+
+{% block body %}
+    <h1>{{ game.title }}</h1>
+    <h2>{{ game.category.name }}</h2>
+    <p>{{ game.description }}</p>
+{% endblock %}

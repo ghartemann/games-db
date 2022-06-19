@@ -3,5 +3,10 @@
 {% block title %}Hello GameController!{% endblock %}
 
 {% block body %}
-    les gauchers m'énervent
+    {% for game in games %}
+        <div>
+            <h2>{{ game.title }}</h2>
+            <h3>{{ game.category.name }}</h3>
+        </div>
+    {% endfor %}
 {% endblock %}

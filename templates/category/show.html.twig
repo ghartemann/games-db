@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello CategoryController!{% endblock %}
+
+{% block body %}
+    <h1>{{ category.name }}</h1>
+    {% for game in category.games %}
+        <div>
+            <h2>{{ game.title }}</h2>
+        </div>
+    {% else %}
+        <p>Aucun jeu trouvé pour cette catégorie.</p>
+    {% endfor %}
+{% endblock %}
