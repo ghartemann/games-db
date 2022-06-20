@@ -10,16 +10,34 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\DecodingExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\RedirectionExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\ServerExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 
 #[Route('/jeu', name: 'app_game_')]
 class GameController extends AbstractController
 {
+    /**
+     * @throws TransportExceptionInterface
+     * @throws ServerExceptionInterface
+     * @throws RedirectionExceptionInterface
+     * @throws DecodingExceptionInterface
+     * @throws ClientExceptionInterface
+     */
     #[Route('/', name: 'index')]
-    public function index(GameRepository $gameRepository): Response
+    public function index(GameRepository $gameRepository, RAWGConnector $RAWGConnector): Response
     {
         $games = $gameRepository->findAll();
 
-        return $this->render('game/index.html.twig', ['games' => $games]);
+        $gameInfos = [];
+
+        foreach ($games as $game) {
+            $gameInfos[] = $RAWGConnector->getInfosGame($game->getSlug());
+        }
+
+        return $this->render('game/index.html.twig', ['games' => $games, 'gameInfos' => $gameInfos]);
     }
 
     #[Route('/nouveau', name: 'new')]
@@ -46,10 +64,10 @@ class GameController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'show')]
+    #[Route('/{slug}', name: 'show')]
     public function show(Game $game, RAWGConnector $RAWGConnector): Response
     {
-        $gameInfos = $RAWGConnector->getInfosGame($game->getTitle());
+        $gameInfos = $RAWGConnector->getInfosGame($game->getSlug());
 
         return $this->render('game/show.html.twig', ['game' => $game, 'gameInfos' => $gameInfos]);
     }

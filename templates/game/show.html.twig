@@ -1,13 +1,20 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello CategoryController!{% endblock %}
+{% block title %}{{ game.title }}{% endblock %}
 
 {% block body %}
     <h1>{{ game.title }}</h1>
     <h2>{{ game.category.name }}</h2>
     <p>{{ game.description }}</p>
 
-<p>Sorti le : {{ gameInfos.released }}</p>
+    <div>
+        <h2>Infos récupérées par API :</h2>
+        {% if gameInfos %}
+            <p>Sorti le : {{ gameInfos.released }}</p>
+            <img src="{{ gameInfos.background_image }}" alt="Une image de {{ game.title }}">
+        {% else %}
+            <p>Rien à afficher.</p>
+        {% endif %}
+    </div>
 
-    <img src="{{ gameInfos.background_image}}">
 {% endblock %}

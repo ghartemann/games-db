@@ -1,12 +1,30 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello GameController!{% endblock %}
+{% block title %}Jeux - {% endblock %}
 
 {% block body %}
     {% for game in games %}
-        <div>
-            <h2>{{ game.title }}</h2>
-            <h3>{{ game.category.name }}</h3>
+
+        <div class="card mb-3" style="max-width: 540px;">
+            <div class="row g-0">
+                <div class="col-md-4">
+                    {% if gameInfos[loop.index-1] %}
+                        <img src="{{ gameInfos[loop.index-1].background_image }}" class="img-fluid rounded-start"
+                             alt="...">
+                    {% else %}
+                        <img src="..." class="img-fluid rounded-start" alt="...">
+                    {% endif %}
+                </div>
+                <div class="col-md-8">
+                    <div class="card-body">
+                        <a href="/jeu/{{ game.slug }}"><h5 class="card-title">{{ game.title }}</h5></a>
+                        <p class="card-text">{{ game.description }}</p>
+                        <p class="card-text">{{ gameInfos[loop.index-1].description|striptags|u.truncate(100, '...', false) }}</p>
+                        <p class="card-text"><small class="text-muted">{{ game.category.name }}</small></p>
+                    </div>
+                </div>
+            </div>
         </div>
+
     {% endfor %}
 {% endblock %}

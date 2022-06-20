@@ -31,6 +31,25 @@ class Game
     #[ORM\JoinColumn(nullable: false)]
     private ?Category $category;
 
+    #[ORM\Column(type: 'string', length: 255)]
+    private ?string $slug;
+
+    /**
+     * @return string|null
+     */
+    public function getSlug(): ?string
+    {
+        return $this->slug;
+    }
+
+    /**
+     * @param string|null $slug
+     */
+    public function setSlug(?string $slug): void
+    {
+        $this->slug = $slug;
+    }
+
     public function getId(): ?int
     {
         return $this->id;

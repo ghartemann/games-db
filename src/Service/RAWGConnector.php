@@ -32,11 +32,13 @@ class RAWGConnector
             'https://api.rawg.io/api/games/' . $title . '?key=561f603be0f947e58b4a2c9c45e3cb57'
         );
 
-        $game = $response->toArray();
+        $statusCode = $response->getStatusCode();
 
-//        if($game['Response'] == 'True')
+        if ($statusCode == 404) {
+            return null;
+        } else {
+            $game = $response->toArray();
             return $game;
-
-//        return null;
+        }
     }
 }
