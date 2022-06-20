@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Game;
 use App\Form\GameType;
 use App\Repository\GameRepository;
+use App\Service\RAWGConnector;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -46,9 +47,11 @@ class GameController extends AbstractController
     }
 
     #[Route('/{id}', name: 'show')]
-    public function show(Game $game): Response
+    public function show(Game $game, RAWGConnector $RAWGConnector): Response
     {
-        return $this->render('game/show.html.twig', ['game' => $game]);
+        $gameInfos = $RAWGConnector->getInfosGame($game->getTitle());
+
+        return $this->render('game/show.html.twig', ['game' => $game, 'gameInfos' => $gameInfos]);
     }
 
 
